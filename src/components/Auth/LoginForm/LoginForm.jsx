@@ -7,7 +7,7 @@ import { initialValue,SchemaValidation } from "./LoginForm.data";
 import Toast from "react-native-toast-message";
 import { getAuth,signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import { screenName } from "../../../utils";
+import { screenName, httpClient, saveToken } from "../../../utils";
 
 export function LoginForm() {
     const navigation = useNavigation();
@@ -18,18 +18,37 @@ export function LoginForm() {
         validateOnChange:false,
         onSubmit: async (values) => {
            try {
-          //  console.log(values);
-            const auth = getAuth();
-            await signInWithEmailAndPassword(auth, values.email,values.password);
+           //console.log(values);
+          const response = await httpClient.post('/auth/login',{email: values.email,password: values.password})
+            //console.log(response.data);
+            
+          
+          const respToken = await saveToken(response.data.token);
+            console.log(respToken);
+            
+          if (respToken) {
             navigation.navigate(screenName.accounts.accounts)
-            formik.resetForm();
-
+          }else{
             Toast.show({
-                text1: "Éxito",
-                text2: "Has iniciado sesión correctamente",
-                type: "success",
-                position: "top"
-            })
+                text1: "Error",
+                text2: "No se pudo iniciar sesión",
+                type: "error",
+                position: "bottom"
+            });
+          }
+          // console.log(response);
+          
+          //   const auth = getAuth();
+          //   await signInWithEmailAndPassword(auth, values.email,values.password);
+          //   navigation.navigate(screenName.accounts.accounts)
+          //   formik.resetForm();
+
+          //   Toast.show({
+          //       text1: "Éxito",
+          //       text2: "Has iniciado sesión correctamente",
+          //       type: "success",
+          //       position: "top"
+          //   })
            
            } catch (error) {
             Toast.show({

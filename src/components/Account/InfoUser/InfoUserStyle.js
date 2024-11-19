@@ -11,5 +11,9 @@ export const styles = StyleSheet.create({
     avatar:{
         marginRight:20,
         backgroundColor:'green'
+    },
+    displayName:{
+        fontWeight: "bold",
+        fontSize: 20
     }
 });
