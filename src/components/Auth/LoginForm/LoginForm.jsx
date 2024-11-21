@@ -10,6 +10,7 @@ import { useNavigation } from "@react-navigation/native";
 import { screenName, httpClient, saveToken } from "../../../utils";
 
 export function LoginForm() {
+  
     const navigation = useNavigation();
     const [showPassword,setShowPassword] = useState(true);
     const formik = useFormik({
@@ -18,7 +19,7 @@ export function LoginForm() {
         validateOnChange:false,
         onSubmit: async (values) => {
            try {
-           //console.log(values);
+          
           const response = await httpClient.post('/auth/login',{email: values.email,password: values.password})
             //console.log(response.data);
             

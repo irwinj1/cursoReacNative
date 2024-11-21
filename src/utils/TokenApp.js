@@ -1,14 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export const saveToken = async (token) =>{
     try {
-       // console.log('token ',token);
+      await removeToken();
        await AsyncStorage.setItem('token', token)
         const tokensSave = await getToken();
       if (tokensSave) {
-        console.log(true);
+       
         
         return true;
       }
@@ -52,10 +53,31 @@ export const removeToken= async () => {
         
     }
 };
+export const isTokenExpire = async ()=>{
+    try {
+        const token = await AsyncStorage.getItem('token');
+        if(token!== null){
+            const decodedToken = jwtDecode(token);
+            const currentTime = Date.now() / 1000;
+            if(decodedToken.exp < currentTime){
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+        
+    } catch(error) {
+       logger.error(error);
+    }
 
+}
 export const refreshToken = async()=>{
     try {
-        const response = await axios.post('http://10.175.160.10:8000/api/refresh', {}, {
+        const token = await getToken();
+        const tokenDecode = jwtDecode(token)
+        const response = await axios.post('http://10.175.160.10:8000/api/auth/refresh-token', {user_id:tokenDecode.user_id}, {
             headers: {
                 'Authorization': `Bearer ${await getToken()}`, // Suponiendo que tu API espera el token actual para refrescarlo
             }

@@ -4,15 +4,24 @@ import { styles } from "./AddInfoUserStyle";
 import { Button, Input } from "@rneui/base";
 import { useFormik } from "formik";
 import { inicialValues, validationSchema } from "./AddInfoUser.data";
-import { getToken, httpClient } from "../../../utils";
+import { getToken, httpClient, isTokenExpire, saveToken, screenName } from "../../../utils";
 import { jwtDecode } from "jwt-decode";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 
 export function AddInfoUser() {
+  const navigator = useNavigation();
   const formik = useFormik({
     initialValues: inicialValues(),
     validationSchema: validationSchema(),
     validateOnChange: false,
     onSubmit: async (values) => {
+        const validToken = await isTokenExpire()
+       
+        
+        if(validToken){
+            const refreshToken = await httpClient.post('/auth/refresh-token',{user_id:dataDecode.user_id});
+            await saveToken(refreshToken.data.token);
+        }
       let dataUser = {};
       if(values.firstName !=''){
         dataUser.first_name = values.firstName;
@@ -41,8 +50,15 @@ export function AddInfoUser() {
         const token = await getToken();
         const dataDecode = jwtDecode(token)
         const refreshToken = await httpClient.post('/auth/refresh-token',{user_id:dataDecode.user_id});
-       console.log(refreshToken);
-       
+   
+        
+        await saveToken(refreshToken.data.token);
+        navigator.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: screenName.accounts.accounts }],
+          })
+        )
 
       }
     },

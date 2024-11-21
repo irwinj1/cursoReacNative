@@ -5,7 +5,7 @@ import { styles } from "./UserLoggedStyle";
 import { Button } from "@rneui/base";
 import { getAuth,signOut } from "firebase/auth";
 import { useNavigation,CommonActions } from "@react-navigation/native";
-import {httpClient, removeToken, screenName} from '../../../utils'
+import {httpClient, isTokenExpire, refreshToken, removeToken, saveToken, screenName} from '../../../utils'
 import { jwtDecode } from "jwt-decode";
 import Toast from "react-native-toast-message";
 
@@ -30,9 +30,15 @@ export function UserLoggedScreen({token}) {
   
   const logout = async () => {
    try {
-     
+ 
+      const isValidToken = await isTokenExpire();
+        if (isValidToken) {
+          const refreshTokens=await refreshToken()
+          await saveToken(refreshTokens)
+        }
+    
      const response = await httpClient.post('/auth/logout');
-    console.log(response.status);
+   
      if (response.data.status == 200) {
       try {
         // Eliminar el token almacenado

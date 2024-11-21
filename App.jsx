@@ -5,9 +5,11 @@ import AppNavigation from './src/navigation/AppNavigation';
 import { initFirebase } from './src/utils';
 import Toast from 'react-native-toast-message';
 
+
 LogBox.ignoreAllLogs(); // ignore
 
 export default function App() {
+  
  // Fetch data from the API
   // const [data,setData] = useState(null);
   // const [error, setError] = useState(null);

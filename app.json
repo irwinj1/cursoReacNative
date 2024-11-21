@@ -32,6 +32,9 @@
         }
       ],
       "expo-secure-store"
-    ]
+    ],
+    "extra":{
+      "API":"http://10.175.160.10:8000/api"
+    }
   }
 }

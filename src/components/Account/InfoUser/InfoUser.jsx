@@ -1,61 +1,123 @@
 import { View, Text } from "react-native";
 import React, {useState,useEffect} from "react";
 import { Avatar } from "@rneui/base";
-import { getAuth } from "firebase/auth";
 import { styles } from "./InfoUserStyle";
-import * as ImagePicker from 'expo-image-picker';
-import { getToken } from "../../../utils";
+import { getToken, httpClient, isTokenExpire, refreshToken, saveToken, screenName } from "../../../utils";
 import { jwtDecode } from "jwt-decode";
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import * as ImagePicker from "expo-image-picker"
+import { LoadingModal } from "../../Shared";
+
 
 export function InfoUser() {
  // const {uid,photoURL,displayName,email} = getAuth().currentUser;
 
- 
+ const navigation = useNavigation();
 
  
   const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+const validTokenUsers = async()=>{
+  const isValidToken = await isTokenExpire();
+    if (isValidToken) {
+      const refreshTokens=await refreshToken()
+      await saveToken(refreshTokens)
+    }
+}
+  const infoUserData = async ()=>{
+    try {
+      await validTokenUsers()
+      const response = await httpClient.get('/users/profile')
+      
+      console.log(response?.data?.data);
+      setUserInfo(response.data?.data)
+      
+    } catch (error) {
+      console.error(error);
+      
+    }finally{
+      setLoading(false);
+    }
+  }
   useEffect(() => {
-    async function getTokens() {
-      const token = await getToken();
-      //console.log("Token recibido:", token);
-
-      if (token) {
-        try {
-          const decoded = jwtDecode(token);
-          //console.log("Información decodificada:", decoded);
-          setUserInfo(decoded);
-        } catch (error) {
-          console.error("Error al decodificar el token:", error);
-        }
+    async function dataUser() {
+      try {
+        await infoUserData();
+      } catch (error) {
+        console.error(error);
+      }finally {
+        setLoading(false);
       }
     }
-    getTokens();
+    dataUser();
   }, []); 
   const changeAvatar = async ()=>{
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes:['images', 'videos'],
+   
+   
+    // const options = {
+    //   mediaType: 'photo', // Puedes usar 'photo' para imágenes o 'video' para videos
+    //   includeBase64: true, // Incluye la imagen en formato Base64 en el resultado
+    //   selectionLimit: 1, // Número máximo de imágenes a seleccionar, 0 para ilimitado
+    //   quality: 1, // Calidad de la imagen (1 = máxima calidad)
+    // };
+    try {
+      setLoading(true);
+    //   await validTokenUsers()
+    //   const result = await launchImageLibrary(options, (response) => {
+    //     if (response.didCancel) {
+    //       console.log('Usuario canceló la selección de la imagen.');
+    //     } else if (response.errorCode) {
+    //       console.error('Error al seleccionar la imagen:', response.errorMessage);
+    //     } else {
+    //       console.log('Imagen seleccionada:');
+    //     }
+    //   });
+     const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, // Solo imágenes
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
-    });
-    if (!result.cancelled) {
-      
-      
-      uploadImage(result.assets[0].uri);
+      base64: true, // 
+     })
+          
+    //  const base64String = await RNFS.readFile(result.assets[0].uri, 'base64');
+    //  const base64Uri = `data:image/jpeg;base64,${base64String}`;
+      uploadImage(result.assets[0].base64)
+     // console.log(result); // Si quieres manejar el resultado fuera del callback
+    } catch (error) {
+      console.error('Error al abrir la galería:', error);
     }
-   
-  
-    // Actualizar la base de datos con el nuevo avatar
-    // firebase.firestore().collection('users').doc(uid).update({ photoURL: avatar }); // Esto es un ejemplo, se debe adaptar a su base de datos.
-    // En este ejemplo, se muestra un mensaje de log para mostrar que se cambió el avatar.
-   
     
   }
-  const uploadImage = (uri) => {
-    console.log(uri);
+  const uploadImage = async (baseImage) => {
+   try {
     
-  };
+    const response = await httpClient.post('/users/save-photo-perfil',{image: baseImage})
+    
+    if(response.status == 200){
+      
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: screenName.accounts.accounts }],
+         
+        })
+      )
+     // await infoUserData()
+    }
+   } catch (error) {
+    console.error(error);
+    
+   }finally{
+    setLoading(false);
+ 
+   }
 
+  };
+  if (loading) {
+    <LoadingModal />
+  }
   return (
     <View style={styles.content}>
     
@@ -64,13 +126,13 @@ export function InfoUser() {
         rounded
         containerStyle={styles.avatar}
         icon={{ type: "material", name: "person" }}
-       // source={{ uri: photoURL }}
+       source={{ uri: userInfo?.image_url }}
       >
         <Avatar.Accessory size={24} onPress={changeAvatar} />
       </Avatar>
       <View>
-        <Text style={styles.displayName}>anonimous</Text>
-        {/* <Text>{email}</Text> */}
+        <Text style={styles.displayName}>{userInfo?.first_name}</Text>
+        <Text>{userInfo?.user?.email}</Text>
       </View>
     </View>
   );
