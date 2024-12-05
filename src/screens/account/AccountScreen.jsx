@@ -13,22 +13,24 @@ export default function AccountScreen() {
   useEffect( () => {
    async function getTokens (){
     const token = await getToken()
-    if (token!==null || token!==undefined) {
-      const refreshToke = await refreshToken();
-      await saveToken(refreshToke);
-    }
    
-    console.log(token);
-    
-  
-    
-      if (token!=null || token!=undefined) {
-       
-        
+      const refreshToke = await refreshToken();
+     
+      
+     if (refreshToke) {
+     
+      
+      await saveToken(refreshToke);
+     }
+   
+     
+      if (token != 'undefined' && token != null) {
+console.log('token');
+
         setHasLogged(true);
         setToken(token);
       } else {
-       
+        setHasLogged(false);
         setToken(null);
       }
    }

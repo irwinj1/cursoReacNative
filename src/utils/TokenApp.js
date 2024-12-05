@@ -76,15 +76,17 @@ export const isTokenExpire = async ()=>{
 export const refreshToken = async()=>{
     try {
         const token = await getToken();
+        
         const tokenDecode = jwtDecode(token)
-        const response = await axios.post('http://10.175.160.10:8000/api/auth/refresh-token', {user_id:tokenDecode.user_id}, {
+        const response = await axios.post('http://10.175.160.4:8002/api/auth/refresh-token', {user_id:tokenDecode.user_id}, {
             headers: {
                 'Authorization': `Bearer ${await getToken()}`, // Suponiendo que tu API espera el token actual para refrescarlo
             }
         });
         return response.data.token;
+    
     } catch (error) {
-        console.error("Error al refrescar el token:", error);
-        throw error;
+        console.log("Error al refrescar el token:", error);
+        
     }
 }

@@ -18,19 +18,19 @@ export function InfoUser() {
  
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-const validTokenUsers = async()=>{
-  const isValidToken = await isTokenExpire();
-    if (isValidToken) {
-      const refreshTokens=await refreshToken()
-      await saveToken(refreshTokens)
-    }
-}
+  const validTokenUsers = async()=>{
+    const isValidToken = await isTokenExpire();
+      if (isValidToken) {
+        const refreshTokens=await refreshToken()
+        await saveToken(refreshTokens)
+      }
+  }
   const infoUserData = async ()=>{
     try {
       await validTokenUsers()
       const response = await httpClient.get('/users/profile')
       
-      console.log(response);
+      
       
     if (response) {
       setUserInfo(response.data?.data)

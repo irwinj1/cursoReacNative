@@ -50,10 +50,10 @@ export function UserLoggedScreen({token}) {
       try {
         // Eliminar el token almacenado
       const respToken =  await removeToken();
-      // console.log(respToken);
+       
        
         
-       if(respToken){
+    
          // Mostrar mensaje de éxito
          Toast.show({
           text1: "Sesión cerrada",
@@ -68,7 +68,7 @@ export function UserLoggedScreen({token}) {
             routes: [{ name: screenName.accounts.accounts }],
           }),
         )
-       }
+   
       } catch (error) {
         console.error('Error al cerrar sesión:', error);
     
