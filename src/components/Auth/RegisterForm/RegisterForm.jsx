@@ -30,15 +30,17 @@ export function RegisterForm() {
           password: values.password,
           repeat_password: values.repeatPassword,
         })
+        
 
-        if (response.status == 200) {
+        if (response?.data?.status == 200) {
           Toast.show({
             text1: "Éxito",
             text2: "Has creado una cuenta correctamente",
             type: "success",
             position: "bottom",
           });
-          await saveToken(response.data.data.token)
+          
+          await saveToken(response?.data?.data?.original?.token)
           navigator.dispatch(
             CommonActions.reset({
               index: 0,
