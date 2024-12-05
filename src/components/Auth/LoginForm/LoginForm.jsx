@@ -25,7 +25,7 @@ export function LoginForm() {
             
           
           const respToken = await saveToken(response.data.token);
-            console.log(respToken);
+        
             
           if (respToken) {
             navigation.navigate(screenName.accounts.accounts)

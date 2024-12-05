@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, {useState,useEffect} from "react";
-import { Avatar } from "@rneui/base";
+import { Avatar, Image } from "@rneui/base";
 import { styles } from "./InfoUserStyle";
 import { getToken, httpClient, isTokenExpire, refreshToken, saveToken, screenName } from "../../../utils";
 import { jwtDecode } from "jwt-decode";
@@ -30,8 +30,11 @@ const validTokenUsers = async()=>{
       await validTokenUsers()
       const response = await httpClient.get('/users/profile')
       
-      console.log(response?.data?.data);
+      console.log(response);
+      
+    if (response) {
       setUserInfo(response.data?.data)
+    }
       
     } catch (error) {
       console.error(error);
@@ -130,10 +133,12 @@ const validTokenUsers = async()=>{
       >
         <Avatar.Accessory size={24} onPress={changeAvatar} />
       </Avatar>
+      
       <View>
-        <Text style={styles.displayName}>{userInfo?.first_name}</Text>
+        <Text style={styles.displayName}>{userInfo?.first_name} {userInfo?.first_last_name}</Text>
         <Text>{userInfo?.user?.email}</Text>
       </View>
+
     </View>
   );
 }

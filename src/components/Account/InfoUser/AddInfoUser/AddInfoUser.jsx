@@ -4,7 +4,7 @@ import { styles } from "./AddInfoUserStyle";
 import { Button, Input } from "@rneui/base";
 import { useFormik } from "formik";
 import { inicialValues, validationSchema } from "./AddInfoUser.data";
-import { getToken, httpClient, isTokenExpire, saveToken, screenName } from "../../../utils";
+import { getToken, httpClient, isTokenExpire, saveToken, screenName } from "../../../../utils";
 import { jwtDecode } from "jwt-decode";
 import { CommonActions, useNavigation } from "@react-navigation/native";
 

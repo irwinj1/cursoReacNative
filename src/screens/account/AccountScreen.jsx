@@ -4,7 +4,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { UserGuestScreen } from "./UserGuestScreen";
 import { UserLoggedScreen } from "./UserLoggedScreen";
 import { LoadingModal } from "../../components";
-import { getToken } from "../../utils";
+import { getToken, refreshToken, saveToken } from "../../utils";
 
 
 export default function AccountScreen() {
@@ -13,19 +13,27 @@ export default function AccountScreen() {
   useEffect( () => {
    async function getTokens (){
     const token = await getToken()
+    if (token!==null || token!==undefined) {
+      const refreshToke = await refreshToken();
+      await saveToken(refreshToke);
+    }
+   
+    console.log(token);
     
+  
     
-      if (token!=null) {
+      if (token!=null || token!=undefined) {
        
         
         setHasLogged(true);
         setToken(token);
       } else {
-        setHasLogged(false);
+       
         setToken(null);
       }
    }
    getTokens();
+   
   }, []);
   if (hasLogged == null) {
     return <LoadingModal isShow={true} text='Cargando...' />;

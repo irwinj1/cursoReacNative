@@ -4,8 +4,8 @@ import { Input, Icon, Button } from "@rneui/base";
 import { styles } from "./RegisterFormStyle";
 import { ErrorMessage, useFormik } from "formik";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { useNavigation } from "@react-navigation/native";
-import {screenName} from '../../../utils'
+import { CommonActions, useNavigation } from "@react-navigation/native";
+import {httpClient, saveToken, screenName} from '../../../utils'
 import { initialValue,SchemaValidation } from "./RegiterForma.data";
 import Toast from "react-native-toast-message";
 
@@ -23,9 +23,37 @@ export function RegisterForm() {
     validationOnchange: false,
     onSubmit: async (values) => {
       try {
-        const auth = getAuth();
-        await createUserWithEmailAndPassword(auth,values.email, values.password);
-        navigator.navigate(screenName.accounts.accounts);
+        // const auth = getAuth();
+        // await createUserWithEmailAndPassword(auth,values.email, values.password);
+        const response = await httpClient.post('/auth/register',{
+          email: values.email,
+          password: values.password,
+          repeat_password: values.repeatPassword,
+        })
+
+        if (response.status == 200) {
+          Toast.show({
+            text1: "Éxito",
+            text2: "Has creado una cuenta correctamente",
+            type: "success",
+            position: "bottom",
+          });
+          await saveToken(response.data.data.token)
+          navigator.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [{ name: screenName.accounts.accounts }],
+            })
+          )
+        } else {
+          Toast.show({
+            text1: "Error",
+            text2: response.data.message,
+            type: "error",
+            position: "bottom",
+          });
+        }
+        
       } catch (error) {
         Toast.show({
           text1: "Error al crear cuenta",

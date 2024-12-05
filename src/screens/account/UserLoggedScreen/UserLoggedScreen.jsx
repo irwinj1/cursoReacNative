@@ -8,14 +8,17 @@ import { useNavigation,CommonActions } from "@react-navigation/native";
 import {httpClient, isTokenExpire, refreshToken, removeToken, saveToken, screenName} from '../../../utils'
 import { jwtDecode } from "jwt-decode";
 import Toast from "react-native-toast-message";
-
+import { LoadingModal } from "../../../components";
 
 export function UserLoggedScreen({token}) {
   const [hasInformation,setHasInformation]=useState(false);
+  const [hasLogged,setHasLogged]=useState(null);
   
   
   const navigation = useNavigation();
   useEffect(() => {
+   if(token != null || token != undefined){
+    setHasLogged(true)
     const dataDecode = jwtDecode(token); // Decodifica el token
     
     // Verifica la información del usuario
@@ -26,17 +29,21 @@ export function UserLoggedScreen({token}) {
    
       setHasInformation(false); // Actualiza el estado
     }
+   }
+    setHasLogged(false)
   }, [token]);
   
   const logout = async () => {
    try {
  
+     if(token){
       const isValidToken = await isTokenExpire();
-        if (isValidToken) {
-          const refreshTokens=await refreshToken()
-          await saveToken(refreshTokens)
-        }
-    
+      if (isValidToken) {
+        const refreshTokens=await refreshToken()
+        await saveToken(refreshTokens)
+      }
+  
+     }
      const response = await httpClient.post('/auth/logout');
    
      if (response.data.status == 200) {
@@ -80,7 +87,9 @@ export function UserLoggedScreen({token}) {
    }
     
   };
-
+  if(hasLogged){
+    return <LoadingModal /> // Mostrar el modal de carga durante la cierre de sesión
+  }
   
   return (
     <ScrollView centerContent={true}  style={styles.content}>
