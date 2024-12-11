@@ -15,5 +15,17 @@ export const styles = StyleSheet.create({
     displayName:{
         fontWeight: "bold",
         fontSize: 20
+    },
+    buttonDialog:{
+        width:100,
+        marginHorizontal:10,
+       
+    },
+    buttonStyleDialog:{
+        borderColor:'#00a680',
+    },
+    titleStyle:{
+        fontWeight:'bold',
+        color:'#00a680 !important'
     }
 });
