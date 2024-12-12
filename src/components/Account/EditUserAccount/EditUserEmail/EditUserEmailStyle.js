@@ -15,5 +15,13 @@ export const styles = StyleSheet.create({
         paddingVertical:10,
         justifyContent:'center',
         alignItems:'center'
+    },
+    icon:{
+        color:'#a1a1a1',
+       
+    },
+    label:{
+        fontSize:10,
+        minHeight:10
     }
 })

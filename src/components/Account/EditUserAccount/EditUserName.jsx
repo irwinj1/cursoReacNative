@@ -3,7 +3,7 @@ import React from 'react'
 import { Input } from '@rneui/themed'
 
 export function EditUserName({userInfo}) {
-    console.log(userInfo);
+   
     
   return (
     <View>

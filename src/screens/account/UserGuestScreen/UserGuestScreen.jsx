@@ -10,7 +10,7 @@ export function UserGuestScreen() {
   const goToLogin = () => {
     // Navigate to Login screen
     navigator.navigate(screenName.accounts.login);
-    console.log('login');
+    
     
   }
 
