@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View,ScrollView } from "react-native";
-import { AddInfoUser, InfoUser } from "../../../components/Account";
+import { AccountUserOptions, AddInfoUser, InfoUser } from "../../../components/Account";
 import { styles } from "./UserLoggedStyle";
 import { Button } from "@rneui/base";
-import { getAuth,signOut } from "firebase/auth";
 import { useNavigation,CommonActions } from "@react-navigation/native";
 import {httpClient, isTokenExpire, refreshToken, removeToken, saveToken, screenName} from '../../../utils'
 import { jwtDecode } from "jwt-decode";

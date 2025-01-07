@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { Base_url } from "./config";
 
 export const saveToken = async (token) =>{
     try {
@@ -78,9 +79,10 @@ export const refreshToken = async()=>{
         const token = await getToken();
         
         const tokenDecode = jwtDecode(token)
-        const response = await axios.post('http://10.175.160.4:8002/api/auth/refresh-token', {user_id:tokenDecode.user_id}, {
+       
+        const response = await axios.post(`${Base_url}/auth/refresh-token`, {user_id:tokenDecode.user_id}, {
             headers: {
-                'Authorization': `Bearer ${await getToken()}`, // Suponiendo que tu API espera el token actual para refrescarlo
+                'Authorization': `Bearer ${token}`, // Suponiendo que tu API espera el token actual para refrescarlo
             }
         });
         return response.data.token;

@@ -10,6 +10,7 @@ import * as ImagePicker from "expo-image-picker"
 import { LoadingModal } from "../../Shared";
 import { Icon,Dialog, Input, Button } from "@rneui/themed";
 import {EditUserName,EditUserEmail} from '../EditUserAccount'
+import { AccountUserOptions } from "./AccountUserOptions";
 
 
 export function InfoUser() {
@@ -23,8 +24,7 @@ export function InfoUser() {
   const [emailUserDialog, setEmailUserDialog] = useState(false);
   const validTokenUsers = async()=>{
     const isValidToken = await isTokenExpire();
-   
-    
+
       if (isValidToken) {
         const refreshTokens=await refreshToken()
         await saveToken(refreshTokens)
@@ -116,6 +116,7 @@ export function InfoUser() {
     <LoadingModal />
   }
   return userInfo ? (
+    <>
     <View style={styles.content}>
       {/* Avatar con posibilidad de cambiar */}
       <Avatar
@@ -141,28 +142,29 @@ export function InfoUser() {
         ]
           .filter((name) => name && name.trim() !== "") 
           .join(" ")}{" "}
-          <Icon
+          {/* <Icon
             type="material-community"
             name="pencil"
             size={20}
             iconStyle={{ color:'#a6a6a6'}}
             onPress={openModalName}
-          />
+          /> */}
         </Text>
         <Text>
           {userInfo?.user?.email}{" "}
-          <Icon
+          {/* <Icon
             type="material-community"
             name="pencil"
             size={20}
             iconStyle={{ color:'#a6a6a6'}}
             onPress={openModalEmail}
-          />
+          /> */}
         </Text>
+     
       </View>
-  
+      
       {/* Diálogo para actualizar nombre */}
-      <Dialog isVisible={nameUserDialog}>
+      {/* <Dialog isVisible={nameUserDialog}>
         <Dialog.Title title="Actualizar nombre" />
         <View>
           <EditUserName userInfo={userInfo} />
@@ -177,16 +179,21 @@ export function InfoUser() {
             containerStyle={styles.buttonDialog}
           />
         </Dialog.Actions>
-      </Dialog>
+      </Dialog> */}
   
       {/* Diálogo para actualizar correo */}
-      <Dialog isVisible={emailUserDialog}>
+      {/* <Dialog isVisible={emailUserDialog}>
         <EditUserEmail
           userEmail={userInfo?.user?.email}
           setEmailUserDialog={setEmailUserDialog}
         />
-      </Dialog>
+      </Dialog> */}
     </View>
+    <View>
+    <AccountUserOptions  />
+    </View>
+    </>
+
   ) : (
     <LoadingModal />
   );

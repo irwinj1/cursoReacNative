@@ -1,2 +1,2 @@
-export * from './EditUserName';
+export * from './DisplayName';
 export * from './EditUserEmail';
