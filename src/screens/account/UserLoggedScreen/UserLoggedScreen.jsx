@@ -41,7 +41,7 @@ export function UserLoggedScreen({token}) {
       }
   
      }
-     const response = await httpClient.post('/auth/logout');
+     const response = await httpClient.post('/users/logout');
    
      if (response.data.status == 200) {
       try {

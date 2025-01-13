@@ -20,8 +20,7 @@ export function InfoUser() {
  
   const [userInfo, setUserInfo] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [nameUserDialog, setNameUserDialog] = useState(false);
-  const [emailUserDialog, setEmailUserDialog] = useState(false);
+ 
   const validTokenUsers = async()=>{
     const isValidToken = await isTokenExpire();
 
@@ -44,6 +43,17 @@ export function InfoUser() {
       
     }finally{
       setLoading(false);
+    }
+  }
+  const getInfoUser = async()=>{
+    try {
+     
+      console.log('aqui');
+      
+      await infoUserData();
+    } catch (error) {
+      console.log(error);
+      
     }
   }
   useEffect(() => {
@@ -103,14 +113,7 @@ export function InfoUser() {
    }
 
   };
-  const openModalName=async ()=>{
-    
-    setNameUserDialog(!nameUserDialog)
-  }
-
-  const openModalEmail=async ()=>{
-    setEmailUserDialog(!emailUserDialog)
-  }
+ 
 
   if (loading) {
     <LoadingModal />
@@ -190,7 +193,7 @@ export function InfoUser() {
       </Dialog> */}
     </View>
     <View>
-    <AccountUserOptions  />
+    <AccountUserOptions getInfoUser={getInfoUser}  />
     </View>
     </>
 

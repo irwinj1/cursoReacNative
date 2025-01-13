@@ -23,7 +23,6 @@ export function schemaValidation() {
         second_last_name: Yup.string(),
         married_name: Yup.string(),
         phone_number: Yup.string()
-           .required("Número de teléfono es obligatorio")
            .matches(/^\+?[1-9]\d{1,14}$/, "Número de teléfono no válido"),
     });
 }

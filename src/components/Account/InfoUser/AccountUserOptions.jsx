@@ -5,15 +5,19 @@ import {map} from 'lodash';
 import { Modal } from '../../Shared/Modal/Modal';
 import { DisplayName } from '../EditUserAccount/DisplayName';
 
-export function AccountUserOptions() {
+export function AccountUserOptions({getInfoUser}) {
   const [showModal, setShowModal] = useState(false)
   const [renderComponent, setRenderComponent] = useState(null);
 
   const onCLoseModal = ()=> setShowModal((prevState)=>!prevState)
+  const getInfoUserData = ()=>{
+    getInfoUser();
+    setShowModal(false);
+  }
   const selectedComponent = (key)=>{
     if(key == 'displayName'){
       setShowModal(true);
-      setRenderComponent(<DisplayName onCLose={onCLoseModal} />);
+      setRenderComponent(<DisplayName onCLose={onCLoseModal} getInfoUserData={getInfoUserData} />);
     }
     if (key == 'email') {
       setShowModal(true);
@@ -42,7 +46,7 @@ export function AccountUserOptions() {
         </ListItem>
       ))}
       <ScrollView centerContent={true} style={{minHeight:"100%"}} >
-        <Modal show={showModal} close={onCLoseModal} >
+        <Modal show={showModal} close={onCLoseModal}  >
           {renderComponent}
         </Modal>
       </ScrollView>

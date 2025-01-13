@@ -4,14 +4,29 @@ import { Button, Input } from "@rneui/base";
 import { useFormik } from "formik";
 import { initialValues, schemaValidation } from "./DisplayName.data";
 import { styles } from "./DisplayNameStyle";
-
-export function DisplayName() {
+import { updatePersonalInformation } from "../../../../services/user.services";
+import {isTokenExpire,refreshToken,saveToken} from "../../../../utils"
+export function DisplayName({getInfoUserData}) {
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: schemaValidation,
     validateOnChange: false,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
+      const isInvalidtoken = isTokenExpire;
+      if(isInvalidtoken){
+        const refreshTokens= await refreshToken()
+        await saveToken(refreshTokens)
+      }
       console.log(values);
+      
+      // const response = await updatePersonalInformation(values);
+      
+      // if (response.status == 200) {
+      //   getInfoUserData()
+      // } else {
+      //   console.log("Error al actualizar los datos personales");
+      // }
+      
     },
     // Other options...
   });
